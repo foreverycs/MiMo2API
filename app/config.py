@@ -27,6 +27,7 @@ class MimoAccount:
 class Config:
     """应用配置"""
     api_keys: str = "sk-default"
+    admin_password: str = "admin"
     mimo_accounts: List[MimoAccount] = None
     models: List[str] = None  # 自定义模型列表，None 表示自动探测
     tools_passthrough: bool = False  # 全局工具透传模式
@@ -40,6 +41,7 @@ class Config:
     def to_dict(self):
         d = {
             "api_keys": self.api_keys,
+            "admin_password": self.admin_password,
             "mimo_accounts": [acc.to_dict() for acc in self.mimo_accounts],
             "tools_passthrough": self.tools_passthrough,
         }
@@ -51,6 +53,7 @@ class Config:
         """用于保存到文件的格式（不含 token_masked）"""
         d = {
             "api_keys": self.api_keys,
+            "admin_password": self.admin_password,
             "mimo_accounts": [
                 {k: v for k, v in acc.to_dict().items() if k != "token_masked"}
                 for acc in self.mimo_accounts
@@ -86,6 +89,7 @@ class ConfigManager:
                 ]
                 self.config = Config(
                     api_keys=data.get('api_keys', 'sk-default'),
+                    admin_password=data.get('admin_password', 'admin'),
                     mimo_accounts=accounts,
                     models=data.get('models', []),
                     tools_passthrough=data.get('tools_passthrough', False)
@@ -128,6 +132,7 @@ class ConfigManager:
             ]
             self.config = Config(
                 api_keys=new_config.get('api_keys', 'sk-default'),
+                admin_password=new_config.get('admin_password', 'admin'),
                 mimo_accounts=accounts,
                 models=new_config.get('models', []),
                 tools_passthrough=new_config.get('tools_passthrough', False)
